@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1518523170782,
+    "timestamp": "2018-02-13T11:59:30.782Z",
+    "type": "click",
+    "params": {
+      "docId": "https://en.wikipedia.org/wiki/Ransomware",
+      "count": 10,
+      "source": "lw-search-ui-click",
+      "collection": "production_coll",
+      "query": "*:*",
+      "filterQueries": [
+        "section_s:(\"News\")",
+        "site_s:(\"English\")"
+      ]
+    }
+  }
+]
