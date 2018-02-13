@@ -1,0 +1,9 @@
+{
+  "name": "node-kafka",
+  "version": "0.0.1",
+  "dependencies": {
+    "express": "latest",
+    "kafka-node": "^2.4.1",
+    "body-parser": "latest"
+  }
+}

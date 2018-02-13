@@ -1,1 +1,1 @@
-# node-kafka
+# Experimenting with Node.JS integration with Kafka
