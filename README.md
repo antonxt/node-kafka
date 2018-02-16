@@ -26,7 +26,7 @@ brew services stop zookeeper
 
 ### Kafka CLI
 ```
-kafka-topics --zookeeper localhost:2181 —list
+kafka-topics --zookeeper localhost:2181 --list
 kafka-topics --zookeeper localhost:2181 --create --replication-factor 1 --partitions 1 --topic signals
 kafka-topics --zookeeper localhost:2181 --delete --topic signals
 kafka-console-consumer --bootstrap-server localhost:9092 --from-beginning --topic signals
@@ -54,3 +54,10 @@ This will build kafka connector ZIP file ready for upload to Fusion 3.1 blob sto
 ```
 ../../gradlew clean createPluginZip -DfusionHome=/Users/antonxt/dev/fusion-3.1.2/3.1.2/
 ```
+
+## Throughput testing
+With JMeter having Fusion, Node.js and Kafka running on the same laptop.
+
+| JMeter > Fusion Signals API | JMeter > Node.js > Kafka > Fusion via Kafka connector|
+|---|---|
+|80 - 90 signals / second | 800 - 900 signals / second |

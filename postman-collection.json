@@ -7,48 +7,7 @@
 	},
 	"item": [
 		{
-			"name": "POST signal",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "b1b8e8c7-770e-4376-a6f9-75960e34890b",
-						"type": "text/javascript",
-						"exec": [
-							"postman.setEnvironmentVariable('timestamp',(new Date()).toISOString());"
-						]
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"id\": \"{{$guid}}\",\n  \"timestamp\": \"{{timestamp}}\",\n  \"type\": \"click\",\n  \"params\": {\n    \"docId\": \"id_{{$randomInt}}\",\n    \"collection\": \"collection_name\",\n    \"query\": \"*:*\",\n    \"filterQueries\": [\n      \"section_s:('News')\",\n      \"site_s:('English')\"\n    ]\n  }\n}"
-				},
-				"url": {
-					"raw": "localhost:5001/api/click",
-					"host": [
-						"localhost"
-					],
-					"port": "5001",
-					"path": [
-						"api",
-						"click"
-					]
-				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "GET signal",
+			"name": "Signal > Node.js",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -104,6 +63,155 @@
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "Signal > Node.js",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b1b8e8c7-770e-4376-a6f9-75960e34890b",
+						"type": "text/javascript",
+						"exec": [
+							"postman.setEnvironmentVariable('timestamp',(new Date()).toISOString());"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": \"{{$guid}}\",\n  \"timestamp\": \"{{timestamp}}\",\n  \"type\": \"click\",\n  \"params\": {\n    \"docId\": \"id_{{$randomInt}}\",\n    \"collection\": \"collection_name\",\n    \"query\": \"*:*\",\n    \"filterQueries\": [\n      \"section_s:('News')\",\n      \"site_s:('English')\"\n    ]\n  }\n}"
+				},
+				"url": {
+					"raw": "localhost:5001/api/click",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"click"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Signal > Fusion",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n  {\n    \"timestamp\": \"{{$timestamp}}\",\n    \"type\": \"click\",\n    \"params\": {\n      \"docId\": \"id_{{$randomInt}}\",\n      \"user_name\": \"search-user\",\n      \"query\": \"*\",\n\t    \"filterQueries\": [\n\t      \"section_s:('News')\"\n\t    ]\n      }\n  }\n]\n"
+				},
+				"url": {
+					"raw": "localhost:8764/api/apollo/signals/default",
+					"host": [
+						"localhost"
+					],
+					"port": "8764",
+					"path": [
+						"api",
+						"apollo",
+						"signals",
+						"default"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Signal > Fusion copy",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n{\n  \"id\": \"cb9568ad-79fa-46ec-bb0f-d4b6badfe74a\",\n  \"timestamp\": \"2018/02/16 22:18:08.088Z\",\n  \"type\": \"click\",\n  \"params\": {\n    \"docId\": \"id_2824\",\n    \"collection\": \"accessories\",\n    \"query\": \"*:*\",\"filterQueries\": [ \"section_s:('Electronics')\"]\n  }\n}\n]"
+				},
+				"url": {
+					"raw": "localhost:8764/api/apollo/signals/default",
+					"host": [
+						"localhost"
+					],
+					"port": "8764",
+					"path": [
+						"api",
+						"apollo",
+						"signals",
+						"default"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "password123",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "admin",
+				"type": "string"
+			},
+			{
+				"key": "saveHelperData",
+				"type": "any"
+			},
+			{
+				"key": "showPassword",
+				"value": false,
+				"type": "boolean"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "351a28c5-943d-40a0-b596-947c7dd8159d",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "c235d93d-240d-48e8-bea8-d446ae168c73",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }
