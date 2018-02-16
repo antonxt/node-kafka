@@ -1,0 +1,2146 @@
+{
+  "objects" : {
+    "collections" : [ {
+      "id" : "kafka",
+      "createdAt" : "2018-02-15T13:35:21.446Z",
+      "searchClusterId" : "default",
+      "commitWithin" : 10000,
+      "solrParams" : {
+        "name" : "kafka",
+        "numShards" : 1,
+        "replicationFactor" : 1
+      },
+      "type" : "DATA",
+      "metadata" : { }
+    } ],
+    "indexPipelines" : [ {
+      "id" : "kafka-default",
+      "stages" : [ {
+        "type" : "field-mapping",
+        "id" : "ef551d2f-93a9-4e52-a524-6888e0a08893",
+        "mappings" : [ {
+          "source" : "/_lw_.*/",
+          "operation" : "delete"
+        }, {
+          "source" : "params.filterQueries",
+          "target" : "params.filterQueries_t",
+          "operation" : "move"
+        } ],
+        "reservedFieldsMappingAllowed" : true,
+        "type" : "field-mapping",
+        "skip" : false,
+        "secretSourceStageId" : "ef551d2f-93a9-4e52-a524-6888e0a08893"
+      }, {
+        "type" : "solr-dynamic-field-name-mapping",
+        "id" : "ecce963d-829f-4ac3-a3c6-6df251b80dae",
+        "duplicateSingleValuedFields" : false,
+        "fieldsToExclude" : [ ],
+        "advancedTextFieldsIndexing" : false,
+        "maxTextLengthForAdvancedIndexing" : 100,
+        "type" : "solr-dynamic-field-name-mapping",
+        "skip" : false,
+        "secretSourceStageId" : "ecce963d-829f-4ac3-a3c6-6df251b80dae"
+      }, {
+        "type" : "solr-index",
+        "id" : "c0a647a8-a0f3-4d08-8acf-961b8f66759c",
+        "enforceSchema" : true,
+        "dateFormats" : [ ],
+        "params" : [ ],
+        "bufferDocsForSolr" : false,
+        "type" : "solr-index",
+        "skip" : false,
+        "secretSourceStageId" : "c0a647a8-a0f3-4d08-8acf-961b8f66759c"
+      } ],
+      "properties" : {
+        "secretSourcePipelineId" : "kafka-default"
+      }
+    }, {
+      "id" : "default",
+      "stages" : [ {
+        "type" : "javascript-index",
+        "id" : "602",
+        "script" : "function(d) {\n  var body = d.getFirstFieldValue('body');\n  if(!body) {\n    return d;\n  }\n\n  var id = d.getId();\n  var questions = [];\n  var splits = body.split('\\n');\n  for (var i = 0; i < splits.length; i++) {\n    if(splits[i]) {\n      var pd = new com.lucidworks.apollo.common.pipeline.PipelineDocument(id + '-' + i);\n      pd.addField('body_t', splits[i].trim());\n      questions.push(pd);\n    }\n  }\n  return questions;\n}",
+        "type" : "javascript-index",
+        "skip" : false,
+        "secretSourceStageId" : "602"
+      }, {
+        "type" : "field-mapping",
+        "id" : "35e255e3-c023-4c8f-beb6-cb75046f6a06",
+        "mappings" : [ {
+          "source" : "/_lw_.*/",
+          "operation" : "delete"
+        } ],
+        "reservedFieldsMappingAllowed" : true,
+        "type" : "field-mapping",
+        "skip" : false,
+        "secretSourceStageId" : "35e255e3-c023-4c8f-beb6-cb75046f6a06"
+      }, {
+        "type" : "solr-dynamic-field-name-mapping",
+        "id" : "a54012a0-3499-436e-b747-cfd00cd49896",
+        "duplicateSingleValuedFields" : false,
+        "fieldsToExclude" : [ ],
+        "advancedTextFieldsIndexing" : true,
+        "maxTextLengthForAdvancedIndexing" : 100,
+        "type" : "solr-dynamic-field-name-mapping",
+        "skip" : false,
+        "secretSourceStageId" : "a54012a0-3499-436e-b747-cfd00cd49896"
+      }, {
+        "type" : "solr-index",
+        "id" : "8016753e-81fc-468a-9689-c9d758c4ab30",
+        "enforceSchema" : true,
+        "dateFormats" : [ ],
+        "params" : [ ],
+        "bufferDocsForSolr" : false,
+        "type" : "solr-index",
+        "skip" : false,
+        "secretSourceStageId" : "8016753e-81fc-468a-9689-c9d758c4ab30"
+      } ],
+      "properties" : {
+        "secretSourcePipelineId" : "default"
+      }
+    }, {
+      "id" : "_system",
+      "stages" : [ {
+        "type" : "solr-index",
+        "id" : "solr-system",
+        "enforceSchema" : true,
+        "dateFormats" : [ ],
+        "params" : [ ],
+        "bufferDocsForSolr" : true,
+        "type" : "solr-index",
+        "skip" : false,
+        "secretSourceStageId" : "solr-system"
+      } ],
+      "properties" : {
+        "secretSourcePipelineId" : "_system"
+      }
+    }, {
+      "id" : "metadata_normalization",
+      "stages" : [ {
+        "type" : "tika-parser",
+        "id" : "conn_tika",
+        "includeImages" : true,
+        "flattenCompound" : false,
+        "addFailedDocs" : true,
+        "addOriginalContent" : false,
+        "contentField" : "_raw_content_",
+        "contentEncoding" : "binary",
+        "returnXml" : false,
+        "keepOriginalStructure" : false,
+        "extractHtmlLinks" : true,
+        "extractOtherLinks" : false,
+        "includeContentTypes" : [ ],
+        "excludeContentTypes" : [ ],
+        "zipBombCompressionRatio" : 200,
+        "zipBombMaxDepth" : 200,
+        "zipBombMaxPackageEntryDepth" : 20,
+        "type" : "tika-parser",
+        "skip" : false,
+        "secretSourceStageId" : "conn_tika"
+      }, {
+        "type" : "field-mapping",
+        "id" : "conn_mapping",
+        "mappings" : [ {
+          "source" : "Content-Encoding",
+          "target" : "contentEncoding_s",
+          "operation" : "move"
+        }, {
+          "source" : "Character-Set",
+          "target" : "characterSet_s",
+          "operation" : "move"
+        }, {
+          "source" : "Content-Length",
+          "target" : "contentLength_l",
+          "operation" : "move"
+        }, {
+          "source" : "FileSize",
+          "target" : "fileSize_l",
+          "operation" : "move"
+        }, {
+          "source" : "FileName",
+          "target" : "fileName_s",
+          "operation" : "move"
+        }, {
+          "source" : "Content-Type",
+          "target" : "mimeType_s",
+          "operation" : "move"
+        }, {
+          "source" : "MimeType",
+          "target" : "mimeType_s",
+          "operation" : "move"
+        }, {
+          "source" : "Title",
+          "target" : "title",
+          "operation" : "move"
+        }, {
+          "source" : "Description",
+          "target" : "description",
+          "operation" : "move"
+        }, {
+          "source" : "Subject",
+          "target" : "subject",
+          "operation" : "move"
+        }, {
+          "source" : "created",
+          "target" : "dateCreated_dt",
+          "operation" : "move"
+        }, {
+          "source" : "ContentCreated",
+          "target" : "dateCreated_dt",
+          "operation" : "move"
+        }, {
+          "source" : "meta:creation_date",
+          "target" : "dateCreated_dt",
+          "operation" : "move"
+        }, {
+          "source" : "Creation-Date",
+          "target" : "dateCreated_dt",
+          "operation" : "move"
+        }, {
+          "source" : "date",
+          "target" : "dateCreated_dt",
+          "operation" : "move"
+        }, {
+          "source" : "Author",
+          "target" : "author",
+          "operation" : "move"
+        }, {
+          "source" : "meta:author",
+          "target" : "author",
+          "operation" : "move"
+        }, {
+          "source" : "Contributor",
+          "target" : "author",
+          "operation" : "move"
+        }, {
+          "source" : "LastModifiedBy",
+          "target" : "author",
+          "operation" : "move"
+        }, {
+          "source" : "Last-Author",
+          "target" : "author",
+          "operation" : "move"
+        }, {
+          "source" : "fullname",
+          "target" : "author",
+          "operation" : "move"
+        }, {
+          "source" : "meta:last-author",
+          "target" : "author",
+          "operation" : "move"
+        }, {
+          "source" : "Last-Modified",
+          "target" : "last_modified",
+          "operation" : "move"
+        }, {
+          "source" : "fileLastModified",
+          "target" : "last_modified",
+          "operation" : "move"
+        }, {
+          "source" : "ContentLastModified",
+          "target" : "last_modified",
+          "operation" : "move"
+        }, {
+          "source" : "Last-Save-Date",
+          "target" : "last_modified",
+          "operation" : "move"
+        }, {
+          "source" : "fullText",
+          "target" : "content_txt",
+          "operation" : "move"
+        }, {
+          "source" : "plainTextContent",
+          "target" : "content_txt",
+          "operation" : "move"
+        }, {
+          "source" : "plainTextMessageContent",
+          "target" : "content_txt",
+          "operation" : "move"
+        }, {
+          "source" : "body",
+          "target" : "content_txt",
+          "operation" : "move"
+        }, {
+          "source" : "content",
+          "target" : "content_txt",
+          "operation" : "move"
+        }, {
+          "source" : "keyword",
+          "target" : "keywords",
+          "operation" : "move"
+        }, {
+          "source" : "Keywords",
+          "target" : "keywords",
+          "operation" : "move"
+        }, {
+          "source" : "messageSubject",
+          "target" : "title",
+          "operation" : "move"
+        }, {
+          "source" : "name",
+          "target" : "title",
+          "operation" : "move"
+        }, {
+          "source" : "Page-Count",
+          "target" : "pageCount_i",
+          "operation" : "move"
+        }, {
+          "source" : "PageCount",
+          "target" : "pageCount_i",
+          "operation" : "move"
+        }, {
+          "source" : "Slide-Count",
+          "target" : "pageCount_i",
+          "operation" : "move"
+        }, {
+          "source" : "Slides",
+          "target" : "pageCount_i",
+          "operation" : "move"
+        }, {
+          "source" : "xmpTPg:NPages",
+          "target" : "pageCount_i",
+          "operation" : "move"
+        }, {
+          "source" : "parsing_time",
+          "target" : "parsing_time_l",
+          "operation" : "move"
+        }, {
+          "source" : "parsing",
+          "target" : "parsing_s",
+          "operation" : "move"
+        }, {
+          "source" : "Comments",
+          "target" : "comments",
+          "operation" : "move"
+        }, {
+          "source" : "resourceName",
+          "target" : "resourcename_s",
+          "operation" : "move"
+        }, {
+          "source" : "resource_name",
+          "target" : "resourcename_s",
+          "operation" : "move"
+        }, {
+          "source" : "Content-Location",
+          "target" : "url",
+          "operation" : "move"
+        }, {
+          "source" : "meta:character-count",
+          "target" : "character-count_i",
+          "operation" : "move"
+        }, {
+          "source" : "Word-Count",
+          "target" : "wordCount_i",
+          "operation" : "move"
+        }, {
+          "source" : "type",
+          "target" : "type_s",
+          "operation" : "move"
+        }, {
+          "source" : "X-Parsed-By",
+          "target" : "xParsedBy_ss",
+          "operation" : "move"
+        }, {
+          "source" : "body.links.anchor",
+          "target" : "body_links_anchor_ss",
+          "operation" : "move"
+        }, {
+          "source" : "body.links.params.alt",
+          "target" : "body_links_params_alt_ss",
+          "operation" : "move"
+        }, {
+          "source" : "body.links.params.type",
+          "target" : "body_links_params_type_ss",
+          "operation" : "move"
+        }, {
+          "source" : "body.links.title",
+          "target" : "body_links_title_ss",
+          "operation" : "move"
+        }, {
+          "source" : "body.links.targetUri",
+          "target" : "body_links_targetUri_ss",
+          "operation" : "move"
+        }, {
+          "source" : "Brightness Value",
+          "target" : "Brightness_Value_ss",
+          "operation" : "move"
+        }, {
+          "source" : "svn:eol-style",
+          "target" : "svn_eol_style_s",
+          "operation" : "move"
+        }, {
+          "source" : "svn:keywords",
+          "target" : "svn_keywords",
+          "operation" : "move"
+        }, {
+          "source" : "svn:last-author",
+          "target" : "author",
+          "operation" : "move"
+        }, {
+          "source" : "svn:last-change-date",
+          "target" : "last_modified",
+          "operation" : "move"
+        }, {
+          "source" : "svn:last-change-revision",
+          "target" : "svn_last_change_revision_s",
+          "operation" : "move"
+        }, {
+          "source" : "svn:mergeinfo",
+          "target" : "svn_mergeinfo_txt",
+          "operation" : "move"
+        }, {
+          "source" : "svn:mime-type",
+          "target" : "svn_mime_type_ss",
+          "operation" : "move"
+        }, {
+          "source" : "/(.*)_[isltbfd]s?/",
+          "operation" : "keep"
+        }, {
+          "source" : "/(.*)_txt/",
+          "operation" : "keep"
+        }, {
+          "source" : "/(.*)_en/",
+          "operation" : "keep"
+        }, {
+          "source" : "/(.*)_dts?/",
+          "operation" : "keep"
+        }, {
+          "source" : "/(.*)_t[ilfd]/",
+          "operation" : "keep"
+        }, {
+          "source" : "/(.*)_p/",
+          "operation" : "keep"
+        }, {
+          "source" : "/(.*)_c/",
+          "operation" : "keep"
+        }, {
+          "source" : "/(.*)_coordinate/",
+          "operation" : "keep"
+        }, {
+          "source" : "/attr_(.*)/",
+          "operation" : "keep"
+        }, {
+          "source" : "/random_(.*)/",
+          "operation" : "keep"
+        }, {
+          "source" : "/ignored_(.*)/",
+          "operation" : "keep"
+        } ],
+        "reservedFieldsMappingAllowed" : false,
+        "type" : "field-mapping",
+        "skip" : false,
+        "secretSourceStageId" : "conn_mapping"
+      }, {
+        "type" : "lang-detect",
+        "id" : "conn_language_detection",
+        "source" : [ "content", "title" ],
+        "outputType" : "document",
+        "outputKey" : "languages",
+        "documentPostfix" : "_lang",
+        "type" : "lang-detect",
+        "skip" : false,
+        "secretSourceStageId" : "conn_language_detection"
+      }, {
+        "type" : "solr-dynamic-field-name-mapping",
+        "id" : "dyn-mapping-default",
+        "duplicateSingleValuedFields" : false,
+        "fieldsToExclude" : [ ],
+        "advancedTextFieldsIndexing" : true,
+        "maxTextLengthForAdvancedIndexing" : 100,
+        "type" : "solr-dynamic-field-name-mapping",
+        "skip" : false,
+        "secretSourceStageId" : "dyn-mapping-default"
+      }, {
+        "type" : "solr-index",
+        "id" : "solr-default",
+        "enforceSchema" : true,
+        "dateFormats" : [ ],
+        "params" : [ ],
+        "bufferDocsForSolr" : false,
+        "unmapped" : {
+          "source" : "/(^.*)$/",
+          "target" : "$1_txt",
+          "operation" : "move"
+        },
+        "type" : "solr-index",
+        "skip" : false,
+        "secretSourceStageId" : "solr-default"
+      } ],
+      "properties" : {
+        "secretSourcePipelineId" : "metadata_normalization"
+      }
+    }, {
+      "id" : "_signals_ingest",
+      "stages" : [ {
+        "type" : "signal-formatter",
+        "id" : "ingest-signals",
+        "flatten" : true,
+        "allowedTypes" : [ ],
+        "undefinedType" : "general",
+        "timestampLocale" : "en-US",
+        "type" : "signal-formatter",
+        "skip" : false,
+        "secretSourceStageId" : "ingest-signals"
+      }, {
+        "type" : "field-mapping",
+        "id" : "mapping-signals",
+        "mappings" : [ {
+          "source" : "type",
+          "target" : "type_s",
+          "operation" : "move"
+        }, {
+          "source" : "flag",
+          "target" : "flag_s",
+          "operation" : "move"
+        }, {
+          "source" : "params.flag",
+          "target" : "flag_s",
+          "operation" : "move"
+        }, {
+          "source" : "timestamp",
+          "target" : "timestamp_tdt",
+          "operation" : "move"
+        }, {
+          "source" : "params.count",
+          "target" : "count_i",
+          "operation" : "move"
+        }, {
+          "source" : "params.weight",
+          "target" : "weight_d",
+          "operation" : "move"
+        }, {
+          "source" : "params.query",
+          "target" : "query_s",
+          "operation" : "copy"
+        }, {
+          "source" : "params.query",
+          "target" : "query_t",
+          "operation" : "move"
+        }, {
+          "source" : "params.docId",
+          "target" : "doc_id_s",
+          "operation" : "move"
+        }, {
+          "source" : "params.userId",
+          "target" : "user_id_s",
+          "operation" : "move"
+        }, {
+          "source" : "params.sessionId",
+          "target" : "session_id_s",
+          "operation" : "move"
+        }, {
+          "source" : "params.filterQueries",
+          "target" : "filters_s",
+          "operation" : "move"
+        }, {
+          "source" : "/params\\.(.*)(?<!_.{1,2})$/",
+          "target" : "params.$1_s",
+          "operation" : "move"
+        } ],
+        "reservedFieldsMappingAllowed" : false,
+        "type" : "field-mapping",
+        "skip" : false,
+        "secretSourceStageId" : "mapping-signals"
+      }, {
+        "type" : "solr-index",
+        "id" : "solr-system",
+        "enforceSchema" : true,
+        "dateFormats" : [ ],
+        "params" : [ ],
+        "bufferDocsForSolr" : true,
+        "type" : "solr-index",
+        "skip" : false,
+        "secretSourceStageId" : "solr-system"
+      } ],
+      "properties" : {
+        "secretSourcePipelineId" : "_signals_ingest"
+      }
+    } ],
+    "queryPipelines" : [ {
+      "id" : "related-items",
+      "stages" : [ {
+        "type" : "more-like-this",
+        "id" : "2e942a5d-f168-483a-89ea-13cf680999d1",
+        "moreLikeThisFields" : [ ],
+        "useQueryParser" : true,
+        "mindf" : 2,
+        "maxdf" : 10000,
+        "minwl" : 3,
+        "docId" : "id",
+        "type" : "more-like-this",
+        "skip" : false,
+        "secretSourceStageId" : "2e942a5d-f168-483a-89ea-13cf680999d1"
+      }, {
+        "type" : "solr-query",
+        "id" : "aa77ae76-7108-44aa-b7db-4c79839845ca",
+        "allowedRequestHandlers" : [ ],
+        "httpMethod" : "POST",
+        "allowFederatedSearch" : false,
+        "type" : "solr-query",
+        "skip" : false,
+        "secretSourceStageId" : "aa77ae76-7108-44aa-b7db-4c79839845ca"
+      } ],
+      "properties" : {
+        "secretSourcePipelineId" : "related-items"
+      }
+    }, {
+      "id" : "kafka-default",
+      "stages" : [ {
+        "type" : "recommendation",
+        "id" : "a079a7bb-1377-41a2-ab60-d5281bcaa607",
+        "numRecommendations" : 10,
+        "numSignals" : 100,
+        "aggrType" : "*",
+        "boostId" : "id",
+        "boostingMethod" : "query-param",
+        "boostingParam" : "bq",
+        "queryParams" : [ {
+          "key" : "qf",
+          "value" : "query_t"
+        }, {
+          "key" : "pf",
+          "value" : "query_t^3"
+        }, {
+          "key" : "pf",
+          "value" : "query_t~2^7"
+        }, {
+          "key" : "pf",
+          "value" : "query_t~0^1"
+        }, {
+          "key" : "mm",
+          "value" : "50%"
+        }, {
+          "key" : "defType",
+          "value" : "edismax"
+        }, {
+          "key" : "sort",
+          "value" : "score desc, weight_d desc"
+        } ],
+        "rollupField" : "doc_id_s",
+        "rollupWeightField" : "weight_d",
+        "type" : "recommendation",
+        "skip" : false,
+        "secretSourceStageId" : "a079a7bb-1377-41a2-ab60-d5281bcaa607"
+      }, {
+        "type" : "search-fields",
+        "id" : "3ba10ec8-6f05-4fce-b024-aa9637e95143",
+        "rows" : 10,
+        "start" : 0,
+        "queryFields" : [ ],
+        "returnFields" : [ "*", "score" ],
+        "type" : "search-fields",
+        "skip" : false,
+        "secretSourceStageId" : "3ba10ec8-6f05-4fce-b024-aa9637e95143"
+      }, {
+        "type" : "facet",
+        "id" : "014af8cb-b128-4cb6-a3ac-e9f3305a527f",
+        "fieldFacets" : [ ],
+        "type" : "facet",
+        "skip" : false,
+        "secretSourceStageId" : "014af8cb-b128-4cb6-a3ac-e9f3305a527f"
+      }, {
+        "type" : "solr-query",
+        "id" : "f18eebfb-05ed-4942-83c8-bf99585f4fe4",
+        "allowedRequestHandlers" : [ ],
+        "httpMethod" : "POST",
+        "allowFederatedSearch" : false,
+        "type" : "solr-query",
+        "skip" : false,
+        "secretSourceStageId" : "f18eebfb-05ed-4942-83c8-bf99585f4fe4"
+      } ],
+      "properties" : {
+        "secretSourcePipelineId" : "kafka-default"
+      }
+    }, {
+      "id" : "default",
+      "stages" : [ {
+        "type" : "search-fields",
+        "id" : "d238f351-9bdc-4b71-b49b-89a007ffc3b1",
+        "rows" : 10,
+        "start" : 0,
+        "queryFields" : [ ],
+        "returnFields" : [ "*", "score" ],
+        "type" : "search-fields",
+        "skip" : false,
+        "secretSourceStageId" : "d238f351-9bdc-4b71-b49b-89a007ffc3b1"
+      }, {
+        "type" : "facet",
+        "id" : "43ae9d75-8222-4d45-be91-c82843aa8294",
+        "fieldFacets" : [ ],
+        "type" : "facet",
+        "skip" : false,
+        "secretSourceStageId" : "43ae9d75-8222-4d45-be91-c82843aa8294"
+      }, {
+        "type" : "solr-query",
+        "id" : "1edd734b-d5f2-4b6a-a854-9cb25fe99d51",
+        "allowedRequestHandlers" : [ ],
+        "httpMethod" : "POST",
+        "allowFederatedSearch" : false,
+        "type" : "solr-query",
+        "skip" : false,
+        "secretSourceStageId" : "1edd734b-d5f2-4b6a-a854-9cb25fe99d51"
+      } ],
+      "properties" : {
+        "secretSourcePipelineId" : "default"
+      }
+    }, {
+      "id" : "_system",
+      "stages" : [ {
+        "type" : "solr-query",
+        "id" : "1f7d78a7-c8f2-42fa-961f-cab99f7768ee",
+        "allowedRequestHandlers" : [ ],
+        "httpMethod" : "POST",
+        "allowFederatedSearch" : false,
+        "type" : "solr-query",
+        "skip" : false,
+        "secretSourceStageId" : "1f7d78a7-c8f2-42fa-961f-cab99f7768ee"
+      } ],
+      "properties" : {
+        "secretSourcePipelineId" : "_system"
+      }
+    } ],
+    "searchClusters" : [ {
+      "id" : "default",
+      "connectString" : "localhost:9983/lwfusion/3.1.2/solr",
+      "zkClientTimeout" : 30000,
+      "zkConnectTimeout" : 60000,
+      "cloud" : true,
+      "bufferFlushInterval" : 1000,
+      "bufferSize" : 100,
+      "concurrency" : 10,
+      "authConfig" : {
+        "authType" : "none"
+      },
+      "validateCluster" : true
+    } ],
+    "features" : {
+      "kafka" : [ {
+        "name" : "partitionByTime",
+        "collectionId" : "kafka",
+        "params" : { },
+        "enabled" : false
+      }, {
+        "name" : "signals",
+        "collectionId" : "kafka",
+        "params" : { },
+        "enabled" : false
+      }, {
+        "name" : "searchLogs",
+        "collectionId" : "kafka",
+        "params" : { },
+        "enabled" : true
+      }, {
+        "name" : "dynamicSchema",
+        "collectionId" : "kafka",
+        "params" : { },
+        "enabled" : false
+      }, {
+        "name" : "recommendations",
+        "collectionId" : "kafka",
+        "params" : {
+          "idField" : "id",
+          "itemsForUser" : true,
+          "itemsForQuery" : false,
+          "itemsForItem" : true,
+          "queriesForQuery" : false
+        },
+        "enabled" : false
+      } ]
+    },
+    "indexProfiles" : {
+      "kafka" : {
+        "default" : "kafka-default"
+      }
+    },
+    "queryProfiles" : {
+      "kafka" : {
+        "default" : "kafka-default"
+      }
+    },
+    "parsers" : [ {
+      "id" : "kafka-signals",
+      "enableMediaTypeDetection" : true,
+      "maxParserDepth" : 16,
+      "parserStages" : [ {
+        "type" : "json",
+        "enabled" : true,
+        "mediaTypes" : [ ],
+        "pathPatterns" : [ ],
+        "errorHandling" : "mark",
+        "id" : "5ce398e2-eb19-47dd-993e-cbdd3c4e830a",
+        "splitArrays" : true,
+        "includePath" : false,
+        "mappings" : [ ],
+        "listHandling" : "multivalued",
+        "inheritMediaTypes" : true
+      }, {
+        "type" : "fallback",
+        "enabled" : true,
+        "mediaTypes" : [ ],
+        "pathPatterns" : [ ],
+        "errorHandling" : "mark",
+        "id" : "8aaa9646-bfc4-4740-a9ca-d5a8faaea21b",
+        "metadataOnly" : false,
+        "maxBytesToKeep" : 1048576,
+        "inheritMediaTypes" : true
+      } ]
+    }, {
+      "id" : "nhl_questions",
+      "enableMediaTypeDetection" : true,
+      "maxParserDepth" : 16,
+      "parserStages" : [ {
+        "type" : "archive",
+        "enabled" : true,
+        "mediaTypes" : [ ],
+        "pathPatterns" : [ ],
+        "errorHandling" : "mark",
+        "id" : "2729f235-d9e0-4bcd-993c-674ad0314440",
+        "alwaysDetect" : true,
+        "inheritMediaTypes" : true
+      }, {
+        "type" : "csv",
+        "enabled" : true,
+        "mediaTypes" : [ ],
+        "pathPatterns" : [ ],
+        "errorHandling" : "mark",
+        "id" : "12280391-9c9d-474a-8783-610bef51d921",
+        "charset" : "detect",
+        "ignoreBOM" : false,
+        "autoDetect" : true,
+        "hasHeaders" : true,
+        "headers" : [ ],
+        "fillValue" : "<FILL>",
+        "trimWhitespace" : true,
+        "skipEmptyLines" : true,
+        "includeRowNumber" : true,
+        "commentHandling" : "ignore",
+        "maxRowLength" : 10485760,
+        "maxNumColumns" : 1000,
+        "maxColumnChars" : 10485760,
+        "columnHandling" : "default",
+        "inheritMediaTypes" : true
+      }, {
+        "type" : "json",
+        "enabled" : true,
+        "mediaTypes" : [ ],
+        "pathPatterns" : [ ],
+        "errorHandling" : "mark",
+        "id" : "5ce398e2-eb19-47dd-993e-cbdd3c4e830a",
+        "splitArrays" : true,
+        "includePath" : false,
+        "mappings" : [ ],
+        "listHandling" : "multivalued",
+        "inheritMediaTypes" : true
+      }, {
+        "type" : "xml",
+        "enabled" : true,
+        "mediaTypes" : [ ],
+        "pathPatterns" : [ ],
+        "errorHandling" : "mark",
+        "id" : "65cc1c3f-83a5-41b7-88e7-f999174b5bcb",
+        "rootPaths" : [ "/" ],
+        "maxSize" : 65536,
+        "listHandling" : "multivalued",
+        "inheritMediaTypes" : true
+      }, {
+        "type" : "html",
+        "enabled" : true,
+        "mediaTypes" : [ ],
+        "pathPatterns" : [ ],
+        "errorHandling" : "mark",
+        "id" : "163dbc06-25d4-43c7-be3a-d3fd39f12ed9",
+        "charset" : "detect",
+        "mappings" : [ ],
+        "keepParent" : true,
+        "extractHtmlLinks" : false,
+        "extractBodyText" : true,
+        "inheritMediaTypes" : true
+      }, {
+        "type" : "text",
+        "enabled" : true,
+        "mediaTypes" : [ ],
+        "pathPatterns" : [ ],
+        "errorHandling" : "mark",
+        "id" : "10cf11e6-34aa-4dfa-a8e2-48796328149b",
+        "charset" : "detect",
+        "ignoreBOM" : false,
+        "maxLength" : 1048576,
+        "maxLineLength" : 1048576,
+        "outputField" : "body",
+        "splitLines" : false,
+        "skipEmptyLines" : false,
+        "skipHeaderLines" : 0,
+        "trimWhitespace" : false,
+        "commentHandling" : "include",
+        "comment" : "#",
+        "commentField" : "comment",
+        "inheritMediaTypes" : true
+      }, {
+        "type" : "tika",
+        "enabled" : true,
+        "mediaTypes" : [ ],
+        "pathPatterns" : [ ],
+        "errorHandling" : "mark",
+        "id" : "5e156a4b-4584-4eef-be2e-6661cb39caa7",
+        "includeImages" : false,
+        "flattenCompound" : true,
+        "addFailedDocs" : false,
+        "addOriginalContent" : false,
+        "contentEncoding" : "binary",
+        "returnXml" : false,
+        "keepOriginalStructure" : false,
+        "extractHtmlLinks" : false,
+        "extractOtherLinks" : false,
+        "excludeContentTypes" : [ ],
+        "zipBombCompressionRatio" : 200,
+        "zipBombMaxDepth" : 200,
+        "zipBombMaxPackageEntryDepth" : 20,
+        "inheritMediaTypes" : true
+      }, {
+        "type" : "fallback",
+        "enabled" : true,
+        "mediaTypes" : [ ],
+        "pathPatterns" : [ ],
+        "errorHandling" : "mark",
+        "id" : "8aaa9646-bfc4-4740-a9ca-d5a8faaea21b",
+        "metadataOnly" : false,
+        "maxBytesToKeep" : 1048576,
+        "inheritMediaTypes" : true
+      } ]
+    }, {
+      "id" : "kafka-local",
+      "enableMediaTypeDetection" : true,
+      "maxParserDepth" : 16,
+      "parserStages" : [ {
+        "type" : "archive",
+        "enabled" : true,
+        "mediaTypes" : [ ],
+        "pathPatterns" : [ ],
+        "errorHandling" : "mark",
+        "id" : "2729f235-d9e0-4bcd-993c-674ad0314440",
+        "alwaysDetect" : true,
+        "inheritMediaTypes" : true
+      }, {
+        "type" : "csv",
+        "enabled" : true,
+        "mediaTypes" : [ ],
+        "pathPatterns" : [ ],
+        "errorHandling" : "mark",
+        "id" : "12280391-9c9d-474a-8783-610bef51d921",
+        "charset" : "detect",
+        "ignoreBOM" : false,
+        "autoDetect" : true,
+        "hasHeaders" : true,
+        "headers" : [ ],
+        "fillValue" : "<FILL>",
+        "trimWhitespace" : true,
+        "skipEmptyLines" : true,
+        "includeRowNumber" : true,
+        "commentHandling" : "ignore",
+        "maxRowLength" : 10485760,
+        "maxNumColumns" : 1000,
+        "maxColumnChars" : 10485760,
+        "columnHandling" : "default",
+        "inheritMediaTypes" : true
+      }, {
+        "type" : "json",
+        "enabled" : true,
+        "mediaTypes" : [ ],
+        "pathPatterns" : [ ],
+        "errorHandling" : "mark",
+        "id" : "5ce398e2-eb19-47dd-993e-cbdd3c4e830a",
+        "splitArrays" : true,
+        "includePath" : false,
+        "mappings" : [ ],
+        "listHandling" : "multivalued",
+        "inheritMediaTypes" : true
+      }, {
+        "type" : "xml",
+        "enabled" : true,
+        "mediaTypes" : [ ],
+        "pathPatterns" : [ ],
+        "errorHandling" : "mark",
+        "id" : "65cc1c3f-83a5-41b7-88e7-f999174b5bcb",
+        "rootPaths" : [ "/" ],
+        "maxSize" : 65536,
+        "listHandling" : "multivalued",
+        "inheritMediaTypes" : true
+      }, {
+        "type" : "html",
+        "enabled" : true,
+        "mediaTypes" : [ ],
+        "pathPatterns" : [ ],
+        "errorHandling" : "mark",
+        "id" : "163dbc06-25d4-43c7-be3a-d3fd39f12ed9",
+        "charset" : "detect",
+        "mappings" : [ ],
+        "keepParent" : true,
+        "extractHtmlLinks" : false,
+        "extractBodyText" : true,
+        "inheritMediaTypes" : true
+      }, {
+        "type" : "text",
+        "enabled" : true,
+        "mediaTypes" : [ ],
+        "pathPatterns" : [ ],
+        "errorHandling" : "mark",
+        "id" : "10cf11e6-34aa-4dfa-a8e2-48796328149b",
+        "charset" : "detect",
+        "ignoreBOM" : false,
+        "maxLength" : 1048576,
+        "maxLineLength" : 1048576,
+        "outputField" : "body",
+        "splitLines" : false,
+        "skipEmptyLines" : false,
+        "skipHeaderLines" : 0,
+        "trimWhitespace" : false,
+        "commentHandling" : "include",
+        "comment" : "#",
+        "commentField" : "comment",
+        "inheritMediaTypes" : true
+      }, {
+        "type" : "tika",
+        "enabled" : true,
+        "mediaTypes" : [ ],
+        "pathPatterns" : [ ],
+        "errorHandling" : "mark",
+        "id" : "5e156a4b-4584-4eef-be2e-6661cb39caa7",
+        "includeImages" : false,
+        "flattenCompound" : true,
+        "addFailedDocs" : false,
+        "addOriginalContent" : false,
+        "contentEncoding" : "binary",
+        "returnXml" : false,
+        "keepOriginalStructure" : false,
+        "extractHtmlLinks" : false,
+        "extractOtherLinks" : false,
+        "excludeContentTypes" : [ ],
+        "zipBombCompressionRatio" : 200,
+        "zipBombMaxDepth" : 200,
+        "zipBombMaxPackageEntryDepth" : 20,
+        "inheritMediaTypes" : true
+      }, {
+        "type" : "fallback",
+        "enabled" : true,
+        "mediaTypes" : [ ],
+        "pathPatterns" : [ ],
+        "errorHandling" : "mark",
+        "id" : "8aaa9646-bfc4-4740-a9ca-d5a8faaea21b",
+        "metadataOnly" : false,
+        "maxBytesToKeep" : 1048576,
+        "inheritMediaTypes" : true
+      } ]
+    } ],
+    "links" : [ {
+      "subject" : "datasource:nhl_questions",
+      "object" : "parser:nhl_questions",
+      "linkType" : "dependsOn"
+    }, {
+      "subject" : "datasource:nhl_questions",
+      "object" : "collection:default",
+      "linkType" : "relatesTo"
+    }, {
+      "subject" : "datasource:nhl_questions",
+      "object" : "index-pipeline:default",
+      "linkType" : "dependsOn"
+    }, {
+      "subject" : "group:296eafba-9917-46b3-bf0d-d752112d7de4",
+      "object" : "spark:kafka-signals_click_signals_aggregation",
+      "linkType" : "hasPart"
+    }, {
+      "subject" : "query-profile:kafka-default",
+      "object" : "collection:kafka",
+      "linkType" : "relatesTo"
+    }, {
+      "subject" : "datasource:kafka-signals",
+      "object" : "collection:kafka",
+      "linkType" : "relatesTo"
+    }, {
+      "subject" : "group:d6f6b73f-003f-4d4b-9054-5f5e165bae89",
+      "object" : "collection:default_signals_aggr",
+      "linkType" : "hasPart"
+    }, {
+      "subject" : "group:d6f6b73f-003f-4d4b-9054-5f5e165bae89",
+      "object" : "collection:default",
+      "linkType" : "relatesTo"
+    }, {
+      "subject" : "datasource:kafka-signals",
+      "object" : "parser:kafka-signals",
+      "linkType" : "dependsOn"
+    }, {
+      "subject" : "index-profile:kafka-default",
+      "object" : "collection:kafka",
+      "linkType" : "relatesTo"
+    }, {
+      "subject" : "index-profile:default-default",
+      "object" : "collection:default",
+      "linkType" : "relatesTo"
+    }, {
+      "subject" : "query-profile:kafka-default",
+      "object" : "query-pipeline:kafka-default",
+      "linkType" : "relatesTo"
+    }, {
+      "subject" : "group:9349bc49-48ca-4238-9b48-e0f57fe8ad5a",
+      "object" : "collection:kafka",
+      "linkType" : "relatesTo"
+    }, {
+      "subject" : "group:d6f6b73f-003f-4d4b-9054-5f5e165bae89",
+      "object" : "spark:default_click_signals_aggregation",
+      "linkType" : "hasPart"
+    }, {
+      "subject" : "group:9349bc49-48ca-4238-9b48-e0f57fe8ad5a",
+      "object" : "collection:kafka_signals_aggr",
+      "linkType" : "hasPart"
+    }, {
+      "subject" : "group:d6f6b73f-003f-4d4b-9054-5f5e165bae89",
+      "object" : "collection:default_signals",
+      "linkType" : "hasPart"
+    }, {
+      "subject" : "query-profile:default-default",
+      "object" : "collection:default",
+      "linkType" : "relatesTo"
+    }, {
+      "subject" : "group:9349bc49-48ca-4238-9b48-e0f57fe8ad5a",
+      "object" : "collection:kafka_signals",
+      "linkType" : "hasPart"
+    }, {
+      "subject" : "group:9349bc49-48ca-4238-9b48-e0f57fe8ad5a",
+      "object" : "spark:kafka_click_signals_aggregation",
+      "linkType" : "hasPart"
+    }, {
+      "subject" : "datasource:nhl_questions",
+      "object" : "blob:nhl-questions.txt",
+      "linkType" : "dependsOn"
+    } ],
+    "tasks" : [ {
+      "type" : "system-logs-cleanup",
+      "id" : "delete-old-system-logs",
+      "collection" : "logs",
+      "days" : 30,
+      "type" : "system-logs-cleanup",
+      "type" : "system-logs-cleanup"
+    }, {
+      "type" : "rest-call",
+      "id" : "delete-old-metrics",
+      "callParams" : {
+        "uri" : "solr://system_metrics/update",
+        "method" : "get",
+        "queryParams" : {
+          "wt" : "json",
+          "stream.body" : "<delete><query>timestamp_tdt:[* TO NOW-13MONTHS]</query></delete>"
+        },
+        "headers" : { }
+      },
+      "type" : "rest-call",
+      "schedule.createTime" : "2018-01-26T13:15:00.359Z",
+      "schedule.endTime" : null,
+      "type" : "rest-call",
+      "schedule.creatorType" : "system",
+      "schedule.startTime" : "2018-01-26T13:15:00.359Z",
+      "schedule.adapted" : "true",
+      "schedule.creatorId" : "MetricSchedulesRegistrar"
+    }, {
+      "type" : "system-logs-cleanup",
+      "id" : "delete-old-audit-logs",
+      "collection" : "audit_logs",
+      "days" : 30,
+      "type" : "system-logs-cleanup",
+      "type" : "system-logs-cleanup"
+    } ],
+    "jobs" : [ {
+      "resource" : "task:delete-old-system-logs",
+      "enabled" : true,
+      "triggers" : [ {
+        "type" : "cron",
+        "enabled" : true,
+        "expression" : "0 20 4 ? * SUN",
+        "type" : "cron"
+      } ],
+      "default" : false
+    }, {
+      "resource" : "spark:kafka_click_signals_aggregation",
+      "enabled" : true,
+      "triggers" : [ {
+        "type" : "interval",
+        "enabled" : true,
+        "interval" : 2,
+        "timeUnit" : "minute",
+        "startTime" : "2018-02-15T13:36:37.661Z",
+        "type" : "interval"
+      } ],
+      "default" : false
+    }, {
+      "resource" : "spark:default_click_signals_aggregation",
+      "enabled" : true,
+      "triggers" : [ {
+        "type" : "interval",
+        "enabled" : true,
+        "interval" : 2,
+        "timeUnit" : "minute",
+        "startTime" : "2018-01-26T13:11:20.416Z",
+        "type" : "interval"
+      } ],
+      "default" : false
+    }, {
+      "resource" : "spark:hourlyMetricsRollup-gauges",
+      "enabled" : true,
+      "triggers" : [ {
+        "type" : "interval",
+        "enabled" : false,
+        "interval" : 1,
+        "timeUnit" : "hour",
+        "startTime" : "2018-02-16T10:26:13.148Z",
+        "type" : "interval"
+      } ],
+      "default" : false
+    }, {
+      "resource" : "spark:hourlyMetricsRollup-counters",
+      "enabled" : true,
+      "triggers" : [ {
+        "type" : "interval",
+        "enabled" : false,
+        "interval" : 1,
+        "timeUnit" : "hour",
+        "startTime" : "2018-02-16T10:26:13.148Z",
+        "type" : "interval"
+      } ],
+      "default" : false
+    }, {
+      "resource" : "spark:dailyMetricsRollup-timers",
+      "enabled" : true,
+      "triggers" : [ {
+        "type" : "interval",
+        "enabled" : false,
+        "interval" : 1,
+        "timeUnit" : "day",
+        "startTime" : "2018-02-16T10:26:13.148Z",
+        "type" : "interval"
+      } ],
+      "default" : false
+    }, {
+      "resource" : "spark:dailyMetricsRollup-counters",
+      "enabled" : true,
+      "triggers" : [ {
+        "type" : "interval",
+        "enabled" : false,
+        "interval" : 1,
+        "timeUnit" : "day",
+        "startTime" : "2018-02-16T10:26:13.145Z",
+        "type" : "interval"
+      } ],
+      "default" : false
+    }, {
+      "resource" : "spark:dailyMetricsRollup-gauges",
+      "enabled" : true,
+      "triggers" : [ {
+        "type" : "interval",
+        "enabled" : false,
+        "interval" : 1,
+        "timeUnit" : "day",
+        "startTime" : "2018-02-16T10:26:13.148Z",
+        "type" : "interval"
+      } ],
+      "default" : false
+    }, {
+      "resource" : "spark:hourlyMetricsRollup-histograms",
+      "enabled" : true,
+      "triggers" : [ {
+        "type" : "interval",
+        "enabled" : false,
+        "interval" : 1,
+        "timeUnit" : "hour",
+        "startTime" : "2018-02-16T10:26:13.148Z",
+        "type" : "interval"
+      } ],
+      "default" : false
+    }, {
+      "resource" : "task:delete-old-audit-logs",
+      "enabled" : true,
+      "triggers" : [ {
+        "type" : "cron",
+        "enabled" : true,
+        "expression" : "0 15 4 ? * SUN",
+        "type" : "cron"
+      } ],
+      "default" : false
+    }, {
+      "resource" : "spark:hourlyMetricsRollup-timers",
+      "enabled" : true,
+      "triggers" : [ {
+        "type" : "interval",
+        "enabled" : false,
+        "interval" : 1,
+        "timeUnit" : "hour",
+        "startTime" : "2018-02-16T10:26:13.148Z",
+        "type" : "interval"
+      } ],
+      "default" : false
+    }, {
+      "resource" : "spark:dailyMetricsRollup-meters",
+      "enabled" : true,
+      "triggers" : [ {
+        "type" : "interval",
+        "enabled" : false,
+        "interval" : 1,
+        "timeUnit" : "day",
+        "startTime" : "2018-02-16T10:26:13.148Z",
+        "type" : "interval"
+      } ],
+      "default" : false
+    }, {
+      "resource" : "spark:hourlyMetricsRollup-meters",
+      "enabled" : true,
+      "triggers" : [ {
+        "type" : "interval",
+        "enabled" : false,
+        "interval" : 1,
+        "timeUnit" : "hour",
+        "startTime" : "2018-02-16T10:26:13.148Z",
+        "type" : "interval"
+      } ],
+      "default" : false
+    }, {
+      "resource" : "spark:dailyMetricsRollup-histograms",
+      "enabled" : true,
+      "triggers" : [ {
+        "type" : "interval",
+        "enabled" : false,
+        "interval" : 1,
+        "timeUnit" : "day",
+        "startTime" : "2018-02-16T10:26:13.148Z",
+        "type" : "interval"
+      } ],
+      "default" : false
+    }, {
+      "resource" : "task:delete-old-metrics",
+      "enabled" : true,
+      "triggers" : [ {
+        "type" : "interval",
+        "enabled" : false,
+        "interval" : 1,
+        "timeUnit" : "week",
+        "startTime" : "2018-02-16T10:31:13.505Z",
+        "type" : "interval"
+      } ],
+      "default" : false
+    } ],
+    "sparkJobs" : [ {
+      "type" : "aggregation",
+      "id" : "hourlyMetricsRollup-gauges",
+      "definition" : {
+        "id" : "hourlyMetricsRollup-gauges",
+        "groupingFields" : [ "name_s", "server_s" ],
+        "signalTypes" : [ "gauge" ],
+        "selectQuery" : "value_d:*",
+        "timeRange" : "[NOW-1MONTH TO NOW-1DAY]",
+        "outputPipeline" : "default",
+        "outputCollection" : "system_metrics",
+        "sourceRemove" : true,
+        "sourceCatchup" : false,
+        "outputRollup" : false,
+        "aggregates" : [ {
+          "type" : "max",
+          "sourceFields" : [ "value_d" ],
+          "targetField" : "max_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "min",
+          "sourceFields" : [ "value_d" ],
+          "targetField" : "min_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "value_d" ],
+          "targetField" : "mean_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "count",
+          "sourceFields" : [ "value_d" ],
+          "targetField" : "count_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "sum",
+          "sourceFields" : [ "value_d" ],
+          "targetField" : "sum_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        } ]
+      },
+      "inputCollection" : "system_metrics",
+      "rows" : 10000
+    }, {
+      "type" : "aggregation",
+      "id" : "dailyMetricsRollup-meters",
+      "definition" : {
+        "id" : "dailyMetricsRollup-meters",
+        "groupingFields" : [ "name_s", "server_s" ],
+        "signalTypes" : [ "meter" ],
+        "selectQuery" : "*:*",
+        "timeRange" : "[NOW-13MONTHS TO NOW-1MONTH]",
+        "outputPipeline" : "default",
+        "outputCollection" : "system_metrics",
+        "sourceRemove" : true,
+        "sourceCatchup" : false,
+        "outputRollup" : false,
+        "aggregates" : [ {
+          "type" : "max",
+          "sourceFields" : [ "max_d" ],
+          "targetField" : "max_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "min",
+          "sourceFields" : [ "min_d" ],
+          "targetField" : "min_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "max",
+          "sourceFields" : [ "count_l" ],
+          "targetField" : "count_l",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "sum",
+          "sourceFields" : [ "count_increment_l" ],
+          "targetField" : "count_increment_l",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "mean_mean_rate_d" ],
+          "targetField" : "mean_mean_rate_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        } ]
+      },
+      "inputCollection" : "system_metrics",
+      "rows" : 10000
+    }, {
+      "type" : "aggregation",
+      "id" : "default_click_signals_aggregation",
+      "definition" : {
+        "id" : "default_click_signals_aggregation",
+        "groupingFields" : [ "query_s", "doc_id_s", "filters_s" ],
+        "signalTypes" : [ "click" ],
+        "selectQuery" : "*:*",
+        "outputPipeline" : "_system",
+        "rollupPipeline" : "_system",
+        "rollupAggregator" : "click",
+        "aggregator" : "click",
+        "sourceRemove" : false,
+        "sourceCatchup" : true,
+        "outputRollup" : true,
+        "statsFields" : [ "aggr_count_i", "count_i", "position_i", "weight_d" ]
+      },
+      "inputCollection" : "default_signals",
+      "rows" : 10000
+    }, {
+      "type" : "aggregation",
+      "id" : "dailyMetricsRollup-timers",
+      "definition" : {
+        "id" : "dailyMetricsRollup-timers",
+        "groupingFields" : [ "name_s", "server_s" ],
+        "signalTypes" : [ "timer" ],
+        "selectQuery" : "*:*",
+        "timeRange" : "[NOW-13MONTHS TO NOW-1MONTH]",
+        "outputPipeline" : "default",
+        "outputCollection" : "system_metrics",
+        "sourceRemove" : true,
+        "sourceCatchup" : false,
+        "outputRollup" : false,
+        "aggregates" : [ {
+          "type" : "max",
+          "sourceFields" : [ "max_d" ],
+          "targetField" : "max_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "min",
+          "sourceFields" : [ "min_d" ],
+          "targetField" : "min_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "max",
+          "sourceFields" : [ "count_l" ],
+          "targetField" : "count_l",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "sum",
+          "sourceFields" : [ "count_increment_l" ],
+          "targetField" : "count_increment_l",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "p50_d" ],
+          "targetField" : "p50_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "p75_d" ],
+          "targetField" : "p75_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "p98_d" ],
+          "targetField" : "p98_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "p99_d" ],
+          "targetField" : "p99_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "p999_d" ],
+          "targetField" : "p999_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "mean_mean_rate_d" ],
+          "targetField" : "mean_mean_rate_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "mean_mean_duration_d" ],
+          "targetField" : "mean_mean_duration_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "quantiles",
+          "sourceFields" : [ "quantiles_ds" ],
+          "targetField" : "quantiles_ds",
+          "mapper" : false,
+          "parameters" : [ {
+            "key" : "multiValued",
+            "value" : "true"
+          } ]
+        }, {
+          "type" : "quantiles",
+          "sourceFields" : [ "quantiles_ls" ],
+          "targetField" : "quantiles_ls",
+          "mapper" : false,
+          "parameters" : [ {
+            "key" : "multiValued",
+            "value" : "true"
+          } ]
+        } ]
+      },
+      "inputCollection" : "system_metrics",
+      "rows" : 10000
+    }, {
+      "type" : "aggregation",
+      "id" : "dailyMetricsRollup-histograms",
+      "definition" : {
+        "id" : "dailyMetricsRollup-histograms",
+        "groupingFields" : [ "name_s", "server_s" ],
+        "signalTypes" : [ "histogram" ],
+        "selectQuery" : "*:*",
+        "timeRange" : "[NOW-13MONTHS TO NOW-1MONTH]",
+        "outputPipeline" : "default",
+        "outputCollection" : "system_metrics",
+        "sourceRemove" : true,
+        "sourceCatchup" : false,
+        "outputRollup" : false,
+        "aggregates" : [ {
+          "type" : "max",
+          "sourceFields" : [ "max_d" ],
+          "targetField" : "max_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "min",
+          "sourceFields" : [ "min_d" ],
+          "targetField" : "min_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "max",
+          "sourceFields" : [ "count_l" ],
+          "targetField" : "count_l",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "sum",
+          "sourceFields" : [ "count_increment_l" ],
+          "targetField" : "count_increment_l",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "p50_d" ],
+          "targetField" : "p50_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "p75_d" ],
+          "targetField" : "p75_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "p98_d" ],
+          "targetField" : "p98_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "p99_d" ],
+          "targetField" : "p99_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "p999_d" ],
+          "targetField" : "p999_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "mean_mean_rate_d" ],
+          "targetField" : "mean_mean_rate_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "mean_mean_duration_d" ],
+          "targetField" : "mean_mean_duration_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "quantiles",
+          "sourceFields" : [ "quantiles_ds" ],
+          "targetField" : "quantiles_ds",
+          "mapper" : false,
+          "parameters" : [ {
+            "key" : "multiValued",
+            "value" : "true"
+          } ]
+        }, {
+          "type" : "quantiles",
+          "sourceFields" : [ "quantiles_ls" ],
+          "targetField" : "quantiles_ls",
+          "mapper" : false,
+          "parameters" : [ {
+            "key" : "multiValued",
+            "value" : "true"
+          } ]
+        } ]
+      },
+      "inputCollection" : "system_metrics",
+      "rows" : 10000
+    }, {
+      "type" : "aggregation",
+      "id" : "dailyMetricsRollup-gauges",
+      "definition" : {
+        "id" : "dailyMetricsRollup-gauges",
+        "groupingFields" : [ "name_s", "server_s" ],
+        "signalTypes" : [ "gauge" ],
+        "selectQuery" : "value_d:*",
+        "timeRange" : "[NOW-13MONTHS TO NOW-1MONTH]",
+        "outputPipeline" : "default",
+        "outputCollection" : "system_metrics",
+        "sourceRemove" : true,
+        "sourceCatchup" : false,
+        "outputRollup" : false,
+        "aggregates" : [ {
+          "type" : "max",
+          "sourceFields" : [ "max_d" ],
+          "targetField" : "max_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "min",
+          "sourceFields" : [ "min_d" ],
+          "targetField" : "min_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "expr",
+          "sourceFields" : [ "mean_d", "count_d", "sum_d" ],
+          "targetField" : "mean_d",
+          "mapper" : false,
+          "parameters" : [ {
+            "key" : "associative",
+            "value" : "true"
+          }, {
+            "key" : "expr",
+            "value" : "sum_d / count_d"
+          } ]
+        }, {
+          "type" : "sum",
+          "sourceFields" : [ "count_d" ],
+          "targetField" : "count_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "sum",
+          "sourceFields" : [ "sum_d" ],
+          "targetField" : "sum_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        } ]
+      },
+      "inputCollection" : "system_metrics",
+      "rows" : 10000
+    }, {
+      "type" : "aggregation",
+      "id" : "hourlyMetricsRollup-timers",
+      "definition" : {
+        "id" : "hourlyMetricsRollup-timers",
+        "groupingFields" : [ "name_s", "server_s" ],
+        "signalTypes" : [ "timer" ],
+        "selectQuery" : "*:*",
+        "timeRange" : "[NOW-1MONTH TO NOW-1DAY]",
+        "outputPipeline" : "default",
+        "outputCollection" : "system_metrics",
+        "sourceRemove" : true,
+        "sourceCatchup" : false,
+        "outputRollup" : false,
+        "aggregates" : [ {
+          "type" : "max",
+          "sourceFields" : [ "max_d" ],
+          "targetField" : "max_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "min",
+          "sourceFields" : [ "min_d" ],
+          "targetField" : "min_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "max",
+          "sourceFields" : [ "count_l" ],
+          "targetField" : "count_l",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "sum",
+          "sourceFields" : [ "count_increment_l" ],
+          "targetField" : "count_increment_l",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "mean_rate_d" ],
+          "targetField" : "mean_mean_rate_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "mean_d" ],
+          "targetField" : "mean_mean_duration_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "p50_d" ],
+          "targetField" : "p50_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "p75_d" ],
+          "targetField" : "p75_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "p98_d" ],
+          "targetField" : "p98_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "p99_d" ],
+          "targetField" : "p99_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "p999_d" ],
+          "targetField" : "p999_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "quantiles",
+          "sourceFields" : [ "values_ds" ],
+          "targetField" : "quantiles_ds",
+          "mapper" : false,
+          "parameters" : [ {
+            "key" : "multiValued",
+            "value" : "true"
+          } ]
+        }, {
+          "type" : "quantiles",
+          "sourceFields" : [ "values_ls" ],
+          "targetField" : "quantiles_ls",
+          "mapper" : false,
+          "parameters" : [ {
+            "key" : "multiValued",
+            "value" : "true"
+          } ]
+        }, {
+          "type" : "histogram",
+          "sourceFields" : [ "values_ds" ],
+          "targetField" : "histogram_ds",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "histogram",
+          "sourceFields" : [ "values_ls" ],
+          "targetField" : "histogram_ls",
+          "mapper" : false,
+          "parameters" : [ ]
+        } ]
+      },
+      "inputCollection" : "system_metrics",
+      "rows" : 10000
+    }, {
+      "type" : "aggregation",
+      "id" : "kafka-signals_click_signals_aggregation",
+      "definition" : {
+        "id" : "kafka-signals_click_signals_aggregation",
+        "groupingFields" : [ "query_s", "doc_id_s", "filters_s" ],
+        "signalTypes" : [ "click" ],
+        "selectQuery" : "*:*",
+        "outputPipeline" : "_system",
+        "rollupPipeline" : "_system",
+        "rollupAggregator" : "click",
+        "aggregator" : "click",
+        "sourceRemove" : false,
+        "sourceCatchup" : true,
+        "outputRollup" : true,
+        "statsFields" : [ "aggr_count_i", "count_i", "position_i", "weight_d" ]
+      },
+      "inputCollection" : "kafka-signals_signals",
+      "rows" : 10000
+    }, {
+      "type" : "aggregation",
+      "id" : "hourlyMetricsRollup-counters",
+      "definition" : {
+        "id" : "hourlyMetricsRollup-counters",
+        "groupingFields" : [ "name_s", "server_s" ],
+        "signalTypes" : [ "counter" ],
+        "selectQuery" : "*:*",
+        "timeRange" : "[NOW-1MONTH TO NOW-1DAY]",
+        "outputPipeline" : "default",
+        "outputCollection" : "system_metrics",
+        "sourceRemove" : true,
+        "sourceCatchup" : false,
+        "outputRollup" : false,
+        "aggregates" : [ {
+          "type" : "max",
+          "sourceFields" : [ "count_l" ],
+          "targetField" : "max_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "min",
+          "sourceFields" : [ "count_l" ],
+          "targetField" : "min_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "sum",
+          "sourceFields" : [ "count_increment_l" ],
+          "targetField" : "count_increment_l",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "max",
+          "sourceFields" : [ "count_l" ],
+          "targetField" : "count_l",
+          "mapper" : false,
+          "parameters" : [ ]
+        } ]
+      },
+      "inputCollection" : "system_metrics",
+      "rows" : 10000
+    }, {
+      "type" : "aggregation",
+      "id" : "kafka_click_signals_aggregation",
+      "definition" : {
+        "id" : "kafka_click_signals_aggregation",
+        "groupingFields" : [ "query_s", "doc_id_s", "filters_s" ],
+        "signalTypes" : [ "click" ],
+        "selectQuery" : "*:*",
+        "outputPipeline" : "_system",
+        "rollupPipeline" : "_system",
+        "rollupAggregator" : "click",
+        "aggregator" : "click",
+        "sourceRemove" : false,
+        "sourceCatchup" : true,
+        "outputRollup" : true,
+        "statsFields" : [ "aggr_count_i", "count_i", "position_i", "weight_d" ]
+      },
+      "inputCollection" : "kafka_signals",
+      "rows" : 10000
+    }, {
+      "type" : "aggregation",
+      "id" : "hourlyMetricsRollup-meters",
+      "definition" : {
+        "id" : "hourlyMetricsRollup-meters",
+        "groupingFields" : [ "name_s", "server_s" ],
+        "signalTypes" : [ "meter" ],
+        "selectQuery" : "*:*",
+        "timeRange" : "[NOW-1MONTH TO NOW-1DAY]",
+        "outputPipeline" : "default",
+        "outputCollection" : "system_metrics",
+        "sourceRemove" : true,
+        "sourceCatchup" : false,
+        "outputRollup" : false,
+        "aggregates" : [ {
+          "type" : "max",
+          "sourceFields" : [ "count_l" ],
+          "targetField" : "max_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "min",
+          "sourceFields" : [ "count_l" ],
+          "targetField" : "min_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "max",
+          "sourceFields" : [ "count_l" ],
+          "targetField" : "count_l",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "sum",
+          "sourceFields" : [ "count_increment_l" ],
+          "targetField" : "count_increment_l",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "mean_rate_d" ],
+          "targetField" : "mean_mean_rate_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        } ]
+      },
+      "inputCollection" : "system_metrics",
+      "rows" : 10000
+    }, {
+      "type" : "aggregation",
+      "id" : "hourlyMetricsRollup-histograms",
+      "definition" : {
+        "id" : "hourlyMetricsRollup-histograms",
+        "groupingFields" : [ "name_s", "server_s" ],
+        "signalTypes" : [ "histogram" ],
+        "selectQuery" : "*:*",
+        "timeRange" : "[NOW-1MONTH TO NOW-1DAY]",
+        "outputPipeline" : "default",
+        "outputCollection" : "system_metrics",
+        "sourceRemove" : true,
+        "sourceCatchup" : false,
+        "outputRollup" : false,
+        "aggregates" : [ {
+          "type" : "min",
+          "sourceFields" : [ "max_d" ],
+          "targetField" : "max_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "max",
+          "sourceFields" : [ "min_d" ],
+          "targetField" : "min_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "mean_d" ],
+          "targetField" : "mean_mean_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "p50_d" ],
+          "targetField" : "p50_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "p75_d" ],
+          "targetField" : "p75_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "p98_d" ],
+          "targetField" : "p98_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "p99_d" ],
+          "targetField" : "p99_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "mean",
+          "sourceFields" : [ "p999_d" ],
+          "targetField" : "p999_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "sum",
+          "sourceFields" : [ "count_l" ],
+          "targetField" : "count_l",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "sum",
+          "sourceFields" : [ "count_increment_l" ],
+          "targetField" : "count_increment_l",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "quantiles",
+          "sourceFields" : [ "values_ds" ],
+          "targetField" : "quantiles_ds",
+          "mapper" : false,
+          "parameters" : [ {
+            "key" : "multiValued",
+            "value" : "true"
+          } ]
+        }, {
+          "type" : "quantiles",
+          "sourceFields" : [ "values_ls" ],
+          "targetField" : "quantiles_ls",
+          "mapper" : false,
+          "parameters" : [ {
+            "key" : "multiValued",
+            "value" : "true"
+          } ]
+        }, {
+          "type" : "histogram",
+          "sourceFields" : [ "values_ds" ],
+          "targetField" : "histogram_ds",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "histogram",
+          "sourceFields" : [ "values_ls" ],
+          "targetField" : "histogram_ls",
+          "mapper" : false,
+          "parameters" : [ ]
+        } ]
+      },
+      "inputCollection" : "system_metrics",
+      "rows" : 10000
+    }, {
+      "type" : "aggregation",
+      "id" : "dailyMetricsRollup-counters",
+      "definition" : {
+        "id" : "dailyMetricsRollup-counters",
+        "groupingFields" : [ "name_s", "server_s" ],
+        "signalTypes" : [ "counter" ],
+        "selectQuery" : "*:*",
+        "timeRange" : "[NOW-13MONTHS TO NOW-1MONTH]",
+        "outputPipeline" : "default",
+        "outputCollection" : "system_metrics",
+        "sourceRemove" : true,
+        "sourceCatchup" : false,
+        "outputRollup" : false,
+        "aggregates" : [ {
+          "type" : "max",
+          "sourceFields" : [ "max_d" ],
+          "targetField" : "max_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "min",
+          "sourceFields" : [ "min_d" ],
+          "targetField" : "min_d",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "max",
+          "sourceFields" : [ "count_l" ],
+          "targetField" : "count_l",
+          "mapper" : false,
+          "parameters" : [ ]
+        }, {
+          "type" : "sum",
+          "sourceFields" : [ "count_increment_l" ],
+          "targetField" : "count_increment_l",
+          "mapper" : false,
+          "parameters" : [ ]
+        } ]
+      },
+      "inputCollection" : "system_metrics",
+      "rows" : 10000
+    } ],
+    "dataSources" : [ {
+      "id" : "kafka-signals",
+      "created" : "2018-02-16T12:00:18.864Z",
+      "modified" : "2018-02-16T12:00:18.864Z",
+      "connector" : "lucid.kafka",
+      "type" : "kafka",
+      "pipeline" : "kafka-default",
+      "parserId" : "kafka-signals",
+      "properties" : {
+        "processingQueueCapacity" : 65536,
+        "keySerializerClass" : "org.apache.kafka.common.serialization.StringSerializer",
+        "threadCount" : 2,
+        "collection" : "kafka",
+        "kafkaAutoCommit" : true,
+        "kafkaSessionTimeout" : 30000,
+        "keyDeserializerClass" : "org.apache.kafka.common.serialization.StringDeserializer",
+        "consumerPollTimeout" : 100,
+        "initial_mapping" : {
+          "id" : "FromMap",
+          "mappings" : [ ],
+          "reservedFieldsMappingAllowed" : false,
+          "type" : "field-mapping",
+          "skip" : false
+        },
+        "valueSerializerClass" : "org.apache.kafka.common.serialization.StringSerializer",
+        "valueDeserializerClass" : "org.apache.kafka.common.serialization.StringDeserializer",
+        "kafkaHost" : "localhost",
+        "kafkaGroupId" : "fusion-group",
+        "kafkaTopics" : [ "signals" ],
+        "kafkaPort" : 9092
+      }
+    }, {
+      "id" : "nhl_questions",
+      "created" : "2018-01-26T14:33:34.085Z",
+      "modified" : "2018-01-26T14:33:34.085Z",
+      "connector" : "lucid.fileupload",
+      "type" : "fileupload",
+      "pipeline" : "default",
+      "parserId" : "nhl_questions",
+      "properties" : {
+        "mediaType" : "application/octet-stream",
+        "collection" : "default",
+        "fileId" : "nhl-questions.txt"
+      }
+    } ]
+  },
+  "metadata" : {
+    "formatVersion" : "1",
+    "exportedBy" : "a0c99f19-e8d7-47cd-93e9-f04d110fd41e",
+    "exportedDate" : "2018-02-16T14:36:50.800Z",
+    "fusionVersion" : "3.1.2",
+    "fusionGuid" : "3b5016b6-b883-4594-a5ac-637c8bf214d3"
+  }
+}

@@ -1,0 +1,109 @@
+{
+	"info": {
+		"name": "node-kafka",
+		"_postman_id": "1d0969ae-2317-50ee-1cce-24fa3d678e7a",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST signal",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b1b8e8c7-770e-4376-a6f9-75960e34890b",
+						"type": "text/javascript",
+						"exec": [
+							"postman.setEnvironmentVariable('timestamp',(new Date()).toISOString());"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": \"{{$guid}}\",\n  \"timestamp\": \"{{timestamp}}\",\n  \"type\": \"click\",\n  \"params\": {\n    \"docId\": \"id_{{$randomInt}}\",\n    \"collection\": \"collection_name\",\n    \"query\": \"*:*\",\n    \"filterQueries\": [\n      \"section_s:('News')\",\n      \"site_s:('English')\"\n    ]\n  }\n}"
+				},
+				"url": {
+					"raw": "localhost:5001/api/click",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"click"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "GET signal",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "d072921c-2a28-4a1e-aed8-2c8b661835e0",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n  {\n    \"id\": 1518523170782,\n    \"timestamp\": \"2018-02-13T11:59:30.782Z\",\n    \"type\": \"click\",\n    \"params\": {\n      \"docId\": \"https://en.wikipedia.org/wiki/Ransomware\",\n      \"count\": 10,\n      \"source\": \"lw-search-ui-click\",\n      \"collection\": \"production_coll\",\n      \"query\": \"*:*\",\n      \"filterQueries\": [\n        \"section_s:(\\\"News\\\")\",\n        \"site_s:(\\\"English\\\")\"\n      ]\n    }\n  }\n]\n"
+				},
+				"url": {
+					"raw": "localhost:5001/api/click?item=id_{{$randomInt}}&session=session_{{$randomInt}}&q=*:*",
+					"host": [
+						"localhost"
+					],
+					"port": "5001",
+					"path": [
+						"api",
+						"click"
+					],
+					"query": [
+						{
+							"key": "item",
+							"value": "id_{{$randomInt}}",
+							"equals": true
+						},
+						{
+							"key": "session",
+							"value": "session_{{$randomInt}}",
+							"equals": true
+						},
+						{
+							"key": "q",
+							"value": "*:*",
+							"equals": true
+						}
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
