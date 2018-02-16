@@ -23,7 +23,27 @@
           "operation" : "delete"
         }, {
           "source" : "params.filterQueries",
-          "target" : "params.filterQueries_t",
+          "target" : "params.filterQueries_ss",
+          "operation" : "move"
+        }, {
+          "source" : "params.collection",
+          "target" : "params.collection_s",
+          "operation" : "move"
+        }, {
+          "source" : "type",
+          "target" : "type_s",
+          "operation" : "move"
+        }, {
+          "source" : "params.query",
+          "target" : "params.query_s",
+          "operation" : "copy"
+        }, {
+          "source" : "params.query",
+          "target" : "params.query_t",
+          "operation" : "move"
+        }, {
+          "source" : "params.docId",
+          "target" : "docId_s",
           "operation" : "move"
         } ],
         "reservedFieldsMappingAllowed" : true,
@@ -586,42 +606,6 @@
     }, {
       "id" : "kafka-default",
       "stages" : [ {
-        "type" : "recommendation",
-        "id" : "a079a7bb-1377-41a2-ab60-d5281bcaa607",
-        "numRecommendations" : 10,
-        "numSignals" : 100,
-        "aggrType" : "*",
-        "boostId" : "id",
-        "boostingMethod" : "query-param",
-        "boostingParam" : "bq",
-        "queryParams" : [ {
-          "key" : "qf",
-          "value" : "query_t"
-        }, {
-          "key" : "pf",
-          "value" : "query_t^3"
-        }, {
-          "key" : "pf",
-          "value" : "query_t~2^7"
-        }, {
-          "key" : "pf",
-          "value" : "query_t~0^1"
-        }, {
-          "key" : "mm",
-          "value" : "50%"
-        }, {
-          "key" : "defType",
-          "value" : "edismax"
-        }, {
-          "key" : "sort",
-          "value" : "score desc, weight_d desc"
-        } ],
-        "rollupField" : "doc_id_s",
-        "rollupWeightField" : "weight_d",
-        "type" : "recommendation",
-        "skip" : false,
-        "secretSourceStageId" : "a079a7bb-1377-41a2-ab60-d5281bcaa607"
-      }, {
         "type" : "search-fields",
         "id" : "3ba10ec8-6f05-4fce-b024-aa9637e95143",
         "rows" : 10,
@@ -634,10 +618,22 @@
       }, {
         "type" : "facet",
         "id" : "014af8cb-b128-4cb6-a3ac-e9f3305a527f",
-        "fieldFacets" : [ ],
+        "fieldFacets" : [ {
+          "field" : "type_s",
+          "sort" : "count",
+          "minCount" : 1,
+          "missing" : false
+        }, {
+          "field" : "params.collection_s",
+          "minCount" : 1,
+          "missing" : false
+        } ],
         "type" : "facet",
         "skip" : false,
-        "secretSourceStageId" : "014af8cb-b128-4cb6-a3ac-e9f3305a527f"
+        "secretSourceStageId" : "014af8cb-b128-4cb6-a3ac-e9f3305a527f",
+        "properties" : {
+          "autoCreated" : true
+        }
       }, {
         "type" : "solr-query",
         "id" : "f18eebfb-05ed-4942-83c8-bf99585f4fe4",
@@ -697,6 +693,74 @@
       } ],
       "properties" : {
         "secretSourcePipelineId" : "_system"
+      }
+    }, {
+      "id" : "default_signals-default",
+      "stages" : [ {
+        "type" : "recommendation",
+        "id" : "323d82b5-5165-496b-92e7-76bf772d74fb",
+        "numRecommendations" : 10,
+        "numSignals" : 100,
+        "aggrType" : "*",
+        "boostId" : "id",
+        "boostingMethod" : "query-param",
+        "boostingParam" : "bq",
+        "queryParams" : [ {
+          "key" : "qf",
+          "value" : "query_t"
+        }, {
+          "key" : "pf",
+          "value" : "query_t^3"
+        }, {
+          "key" : "pf",
+          "value" : "query_t~2^7"
+        }, {
+          "key" : "pf",
+          "value" : "query_t~0^1"
+        }, {
+          "key" : "mm",
+          "value" : "50%"
+        }, {
+          "key" : "defType",
+          "value" : "edismax"
+        }, {
+          "key" : "sort",
+          "value" : "score desc, weight_d desc"
+        } ],
+        "rollupField" : "doc_id_s",
+        "rollupWeightField" : "weight_d",
+        "type" : "recommendation",
+        "skip" : false,
+        "secretSourceStageId" : "323d82b5-5165-496b-92e7-76bf772d74fb"
+      }, {
+        "type" : "search-fields",
+        "id" : "e9a43f2a-973e-4dfc-bc2f-de6d34a56632",
+        "rows" : 10,
+        "start" : 0,
+        "queryFields" : [ ],
+        "returnFields" : [ "*", "score" ],
+        "type" : "search-fields",
+        "skip" : false,
+        "secretSourceStageId" : "e9a43f2a-973e-4dfc-bc2f-de6d34a56632"
+      }, {
+        "type" : "facet",
+        "id" : "c6e12683-8818-46a4-b23f-b27aeef9a2f3",
+        "fieldFacets" : [ ],
+        "type" : "facet",
+        "skip" : false,
+        "secretSourceStageId" : "c6e12683-8818-46a4-b23f-b27aeef9a2f3"
+      }, {
+        "type" : "solr-query",
+        "id" : "88a3f1d4-9985-46a3-80fe-55db27d6f829",
+        "allowedRequestHandlers" : [ ],
+        "httpMethod" : "POST",
+        "allowFederatedSearch" : false,
+        "type" : "solr-query",
+        "skip" : false,
+        "secretSourceStageId" : "88a3f1d4-9985-46a3-80fe-55db27d6f829"
+      } ],
+      "properties" : {
+        "secretSourcePipelineId" : "default_signals-default"
       }
     } ],
     "searchClusters" : [ {
@@ -1074,10 +1138,6 @@
     }, {
       "subject" : "index-profile:default-default",
       "object" : "collection:default",
-      "linkType" : "relatesTo"
-    }, {
-      "subject" : "query-profile:kafka-default",
-      "object" : "query-pipeline:kafka-default",
       "linkType" : "relatesTo"
     }, {
       "subject" : "group:9349bc49-48ca-4238-9b48-e0f57fe8ad5a",
@@ -2139,7 +2199,7 @@
   "metadata" : {
     "formatVersion" : "1",
     "exportedBy" : "a0c99f19-e8d7-47cd-93e9-f04d110fd41e",
-    "exportedDate" : "2018-02-16T14:36:50.800Z",
+    "exportedDate" : "2018-02-16T16:55:42.169Z",
     "fusionVersion" : "3.1.2",
     "fusionGuid" : "3b5016b6-b883-4594-a5ac-637c8bf214d3"
   }
